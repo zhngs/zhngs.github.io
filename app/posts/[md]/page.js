@@ -23,5 +23,6 @@ export default async function Post({ params }) {
 }
 
 export async function generateStaticParams() {
-    return getAllPostIds();
+    const allpost = getAllPostIds();
+    return allpost;
 }
