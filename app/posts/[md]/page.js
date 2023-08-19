@@ -6,7 +6,6 @@ import utilStyles from '../../utils.module.css';
 
 export default async function Post({ params }) {
     const postData = await getPostData(params.md);
-    console.log(postData);
     return (
         <Container>
             <Head>
