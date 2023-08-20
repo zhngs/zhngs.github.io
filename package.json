@@ -1,25 +1,17 @@
 {
-  "name": "zhngs.github.io",
-  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "build": "next build && next export",
+    "start": "next start"
   },
   "dependencies": {
-    "date-fns": "^2.30.0",
+    "date-fns": "^2.29.3",
     "gray-matter": "^4.0.3",
-    "next": "13.4.18",
+    "next": "latest",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "remark": "^14.0.3",
-    "remark-html": "^15.0.2",
-    "sharp": "^0.32.5"
-  },
-  "devDependencies": {
-    "eslint": "8.47.0",
-    "eslint-config-next": "13.4.18"
+    "remark": "^14.0.2",
+    "remark-html": "^15.0.1"
   }
 }
