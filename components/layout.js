@@ -13,8 +13,8 @@ export default function Layout({ children, home }) {
             <Head>
                 <link rel="icon" href="/favicon.ico" />
                 <meta
-                    name="description"
-                    content="Learn how to build a personal website using Next.js"
+                    name="zhngs"
+                    content="zhngs blog"
                 />
                 <meta
                     property="og:image"
@@ -25,6 +25,7 @@ export default function Layout({ children, home }) {
                 <meta name="og:title" content={siteTitle} />
                 <meta name="twitter:card" content="summary_large_image" />
             </Head>
+            <br />
             <header className={styles.header}>
                 {home ? (
                     <>

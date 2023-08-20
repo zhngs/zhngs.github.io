@@ -13,10 +13,10 @@ export default function Home({ allPostsData }) {
             </Head>
             <section className={utilStyles.headingMd}>
                 <p>
-                    Hello, I’m <strong>zhngs</strong>. I’m a software engineer.
+                    Hello👋, I’m <strong>zhngs</strong>. I’m a software engineer.
                 </p>
                 <p>
-                    this is my blog.
+                    welcome to my blog😀.
                 </p>
             </section>
             <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>

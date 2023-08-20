@@ -1,15 +1,17 @@
 .container {
-  max-width: 36rem;
-  padding: 0 1rem;
-  margin: 3rem auto 6rem;
+    max-width: 55rem;
+    padding: 0 1rem;
+    margin: 3rem auto 6rem;
+    background-color: #ffffff;
+    border-radius: 5px;
 }
 
 .header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .backToHome {
-  margin: 3rem 0 0;
+    margin: 3rem 0 0;
 }
