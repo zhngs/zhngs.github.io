@@ -16,29 +16,29 @@ export default function Home({ allPostsDir, allPostsData, pinnedPostsData }) {
                     Hello👋, I’m <strong>zhngs</strong>. I’m a software engineer.
                 </p>
                 <p>
-                    welcome to my blog😀.
+                    Welcome to my blog🎉.
                 </p>
             </section>
             <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
-                <h2 className={utilStyles.headingLg}>🗂️ Directory</h2>
+                <h2 className={utilStyles.headingLg}>📍 Pinned</h2>
                 <ul className={utilStyles.list}>
-                    {allPostsDir.map((dir) => (
-                        <li className={utilStyles.listItem} key={dir}>
-                            <Link href={`/posts/${dir}`}>{dir}</Link>
+                    {pinnedPostsData.map(({ id, dir, date, words }) => (
+                        <li className={utilStyles.listItem} key={id}>
+                            <Link href={`/posts/${dir}/${id}`}>{id}</Link>
+                            <br />
+                            <small className={utilStyles.lightText}>
+                                {dir} <Date dateString={date} /> {words}字
+                            </small>
                         </li>
                     ))}
                 </ul>
             </section>
             <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
-                <h2 className={utilStyles.headingLg}>📍 Pinned</h2>
+                <h2 className={utilStyles.headingLg}>🗂️ Directory</h2>
                 <ul className={utilStyles.list}>
-                    {pinnedPostsData.map(({ id, dir, date }) => (
-                        <li className={utilStyles.listItem} key={id}>
-                            <Link href={`/posts/${dir}/${id}`}>{id}</Link>
-                            <br />
-                            <small className={utilStyles.lightText}>
-                                {dir} <Date dateString={date} />
-                            </small>
+                    {allPostsDir.map(({ dirname, postnum }) => (
+                        <li className={utilStyles.listItem} key={dirname}>
+                            <Link href={`/posts/${dirname}`}>{dirname}({postnum})</Link>
                         </li>
                     ))}
                 </ul>
@@ -46,12 +46,12 @@ export default function Home({ allPostsDir, allPostsData, pinnedPostsData }) {
             <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
                 <h2 className={utilStyles.headingLg}>📖 Recent Blog</h2>
                 <ul className={utilStyles.list}>
-                    {allPostsData.map(({ id, dir, date }) => (
+                    {allPostsData.map(({ id, dir, date, words }) => (
                         <li className={utilStyles.listItem} key={id}>
                             <Link href={`/posts/${dir}/${id}`}>{id}</Link>
                             <br />
                             <small className={utilStyles.lightText}>
-                                {dir} <Date dateString={date} />
+                                {dir} <Date dateString={date} /> {words}字
                             </small>
                         </li>
                     ))}
@@ -62,7 +62,8 @@ export default function Home({ allPostsDir, allPostsData, pinnedPostsData }) {
 }
 
 export async function getStaticProps() {
-    const allPostsData = getSortedPostsData();
+    let allPostsData = getSortedPostsData();
+    allPostsData = allPostsData.slice(0, 15);
     const pinnedPostsData = getPinnedPostsData();
     const allPostsDir = getPostsDir();
     return {
