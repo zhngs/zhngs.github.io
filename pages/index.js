@@ -1,11 +1,11 @@
 import Head from 'next/head'
 import Layout, { siteTitle } from '../components/layout'
 import utilStyles from '../styles/utils.module.css'
-import { getSortedPostsData, getPostsDir, getPinnedPostsData } from '../lib/posts'
+import { getPostsDate, getSortedPostsData, getPostsDir, getPinnedPostsData } from '../lib/posts'
 import Link from 'next/link'
 import Date from '../components/date'
 
-export default function Home({ allPostsDir, allPostsData, pinnedPostsData }) {
+export default function Home({ allPostsDir, allPostsData, pinnedPostsData, allPostsDate }) {
     return (
         <Layout home>
             <Head>
@@ -44,6 +44,16 @@ export default function Home({ allPostsDir, allPostsData, pinnedPostsData }) {
                 </ul>
             </section>
             <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
+                <h2 className={utilStyles.headingLg}>📅 Archive</h2>
+                <ul className={utilStyles.list}>
+                    {allPostsDate.map(({ year, postnum }) => (
+                        <li className={utilStyles.listItem} key={year}>
+                            <Link href={`/archive/${year}`}>{year}({postnum})</Link>
+                        </li>
+                    ))}
+                </ul>
+            </section>
+            <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
                 <h2 className={utilStyles.headingLg}>📖 Recent Blog</h2>
                 <ul className={utilStyles.list}>
                     {allPostsData.map(({ id, dir, date, words }) => (
@@ -66,11 +76,13 @@ export async function getStaticProps() {
     allPostsData = allPostsData.slice(0, 15);
     const pinnedPostsData = getPinnedPostsData();
     const allPostsDir = getPostsDir();
+    const allPostsDate =  getPostsDate();
     return {
         props: {
             allPostsDir,
             allPostsData,
-            pinnedPostsData
+            pinnedPostsData,
+            allPostsDate
         }
     }
 }
