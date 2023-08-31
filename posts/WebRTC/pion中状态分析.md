@@ -54,3 +54,12 @@ date: '2023-08-31'
 - 在startTransports中会调用改变pc状态的回调，此时状态未知
 - 在iceTransport的internalOnConnectionStateChangeHandler回调中会调用改变pc状态的回调，这个回调会注册到ice Agent的OnConnectionStateChange回调中，ice Agent的回调都在agent_handler.go文件中
 - ice Agent在流程中会调用updateConnectionState函数来向chan中传递状态，从而传给回调
+
+### 3.ice状态改变时机
+
+- Agent的Restart会将状态变为checking
+- startConnectivityChecks会将状态变为checking
+- setSelectedPair会将状态变为connected
+- connectivityChecks检测到超时会将状态改为failed
+- validateSelectedPair会视情况将状态置为failed、disconnected、connected
+- taskLoop退出会将状态变为closed
