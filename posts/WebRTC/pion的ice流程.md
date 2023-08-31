@@ -10,8 +10,48 @@ date: '2023-08-29'
 - ice transport最底层的udp socket是在candidateBase结构中，底层数据的收发都要经过candidateBase
 
 
-### 2.收集本地candidate流程
+### 2.收集candidate流程
 
+- 收集candidate的入口是ICEGatherer结构的Gather函数，最终调用到ice模块中Agent的gatherCandidates函数
+  ```go
+  for _, t := range a.candidateTypes {
+  		switch t {
+  		case CandidateTypeHost:
+  			wg.Add(1)
+  			go func() {
+  				a.gatherCandidatesLocal(ctx, a.networkTypes)
+  				wg.Done()
+  			}()
+  		case CandidateTypeServerReflexive:
+  			wg.Add(1)
+  			go func() {
+  				if a.udpMuxSrflx != nil {
+  					a.gatherCandidatesSrflxUDPMux(ctx, a.urls, a.networkTypes)
+  				} else {
+  					a.gatherCandidatesSrflx(ctx, a.urls, a.networkTypes)
+  				}
+  				wg.Done()
+  			}()
+  			if a.extIPMapper != nil && a.extIPMapper.candidateType == CandidateTypeServerReflexive {
+  				wg.Add(1)
+  				go func() {
+  					a.gatherCandidatesSrflxMapped(ctx, a.networkTypes)
+  					wg.Done()
+  				}()
+  			}
+  		case CandidateTypeRelay:
+  			wg.Add(1)
+  			go func() {
+  				a.gatherCandidatesRelay(ctx, a.urls)
+  				wg.Done()
+  			}()
+  		case CandidateTypePeerReflexive, CandidateTypeUnspecified:
+  		}
+  	}
+  ```
+
+- 遍历Agent的candidateTypes列表，根据不同的candidate类型来调用不同的收集函数
+- 在gatherCandidatesLocal函数中会收集本机的所有ip，并打开udp或tcp socket，将其封装成candidate加入到Agent中
 
 ### 问题
 
