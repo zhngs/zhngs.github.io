@@ -9,10 +9,10 @@ date: '2023-08-29'
 - ICETransport的Start函数在ensureGatherer会创建ice agent，在agent上注册OnConnectionStateChange回调、OnSelectedCandidatePairChange回调，根据agent的角色来确定是Dial还是Accept
 - ice transport最底层的udp socket是在candidateBase结构中，底层数据的收发都要经过candidateBase
 
-
 ### 2.收集candidate流程
 
 - 收集candidate的入口是ICEGatherer结构的Gather函数，最终调用到ice模块中Agent的gatherCandidates函数
+
   ```go
   for _, t := range a.candidateTypes {
   		switch t {
@@ -49,9 +49,9 @@ date: '2023-08-29'
   		}
   	}
   ```
-
 - 遍历Agent的candidateTypes列表，根据不同的candidate类型来调用不同的收集函数
 - 在gatherCandidatesLocal函数中会收集本机的所有ip，并打开udp或tcp socket，将其封装成candidate加入到Agent中
+- 收集完candidate后，会调用addCandidate，其中会筛选出同种协议类型（udp4、udp6、tcp4、tcp6）的remote candidate列表，并挨个组成candidate pair
 
 ### 问题
 
