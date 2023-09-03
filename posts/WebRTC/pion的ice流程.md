@@ -57,7 +57,9 @@ date: '2023-08-29'
 
 #### 如何确定ice的role？
 
-- 如果a端是ice-lite，b端不是，那么a端必须是controlling role
+RFC 8445 S6.1.1
+
+- 如果a端是ice-lite，b端不是，那么b端必须是controlling role
 - 如果a和b都是ice-lite或者都不是，那么发起offer方的一端是controlling role
 
 #### pion何时开始收集candidate？
