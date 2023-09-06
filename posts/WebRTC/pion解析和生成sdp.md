@@ -5,9 +5,9 @@ date: '2023-09-05'
 
 sdp有Plan B和Unified Plan两种，Unified Plan比Plan B更灵活，也是推荐的格式
 
-### 2.解析sdp
+### 2.sdp数据类型
 
-pion会将字符串类型的sdp解析成SessionDescription结构
+pion会将字符串类型的sdp解析成SessionDescription结构，最主要的是MediaDescription中的Attribute列表，然后通过字符串匹配来确定具体的属性
 
 ```go
 // SessionDescription is a a well-defined format for conveying sufficient
@@ -70,4 +70,63 @@ type SessionDescription struct {
 	// https://tools.ietf.org/html/rfc4566#section-5.14
 	MediaDescriptions []*MediaDescription
 }
+
+// MediaDescription represents a media type.
+// https://tools.ietf.org/html/rfc4566#section-5.14
+type MediaDescription struct {
+	// m=<media> <port>/<number of ports> <proto> <fmt> ...
+	// https://tools.ietf.org/html/rfc4566#section-5.14
+	MediaName MediaName
+
+	// i=<session description>
+	// https://tools.ietf.org/html/rfc4566#section-5.4
+	MediaTitle *Information
+
+	// c=<nettype> <addrtype> <connection-address>
+	// https://tools.ietf.org/html/rfc4566#section-5.7
+	ConnectionInformation *ConnectionInformation
+
+	// b=<bwtype>:<bandwidth>
+	// https://tools.ietf.org/html/rfc4566#section-5.8
+	Bandwidth []Bandwidth
+
+	// k=<method>
+	// k=<method>:<encryption key>
+	// https://tools.ietf.org/html/rfc4566#section-5.12
+	EncryptionKey *EncryptionKey
+
+	// a=<attribute>
+	// a=<attribute>:<value>
+	// https://tools.ietf.org/html/rfc4566#section-5.13
+	Attributes []Attribute
+}
 ```
+
+### 3.codec解析
+将具体payload和rtpmap、fmtp、rtcp-fb联系起来，构成codec信息，结构如下
+```go
+// RTPCodecParameters is a sequence containing the media codecs that an RtpSender
+// will choose from, as well as entries for RTX, RED and FEC mechanisms. This also
+// includes the PayloadType that has been negotiated
+//
+// https://w3c.github.io/webrtc-pc/#rtcrtpcodecparameters
+type RTPCodecParameters struct {
+	RTPCodecCapability
+	PayloadType PayloadType
+
+	statsID string
+}
+
+// RTPCodecCapability provides information about codec capabilities.
+//
+// https://w3c.github.io/webrtc-pc/#dictionary-rtcrtpcodeccapability-members
+type RTPCodecCapability struct {
+	MimeType     string
+	ClockRate    uint32
+	Channels     uint16
+	SDPFmtpLine  string
+	RTCPFeedback []RTCPFeedback
+}
+```
+
+exmap是rtp的拓展头信息
