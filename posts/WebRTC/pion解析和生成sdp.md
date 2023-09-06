@@ -102,14 +102,57 @@ type MediaDescription struct {
 }
 ```
 
-### 3.codec解析
-将具体payload和rtpmap、fmtp、rtcp-fb联系起来，构成codec信息，结构如下
+### 3.媒体行解析
+媒体行是以`m=`开头的行，是媒体信息的一个大纲，pion会遍历Formats字段，拿到所有codec的payload，然后根据下文补充codec信息
 ```go
-// RTPCodecParameters is a sequence containing the media codecs that an RtpSender
-// will choose from, as well as entries for RTX, RED and FEC mechanisms. This also
-// includes the PayloadType that has been negotiated
-//
-// https://w3c.github.io/webrtc-pc/#rtcrtpcodecparameters
+// m=<media> <port>/<number of ports> <proto> <fmt> ...
+// m=audio 9 UDP/TLS/RTP/SAVPF 111 63 9 0 8 110 126
+type MediaName struct {
+	Media   string // audio
+	Port    RangedPort // 9
+	Protos  []string // {UDP, TLS, RTP, SAVPF}
+	Formats []string // {111, 63, 9, 0, 8, 110, 126}
+}
+```
+
+
+### 4.codec解析
+payload和rtpmap、fmtp、rtcp-fb联系起来，构成codec信息
+```go
+//a=rtpmap:111 opus/48000/2
+//a=rtcp-fb:111 transport-cc
+//a=fmtp:111 minptime=10;useinbandfec=1
+
+type Codec struct {
+	PayloadType        uint8 // 111
+	Name               string // opus
+	ClockRate          uint32 // 48000
+	EncodingParameters string // 2
+	Fmtp               string // minptime=10;useinbandfec=1
+	RTCPFeedback       []string // {transport-cc}
+}
+
+// rtcp feedback可进一步解析成如下两个字段
+type RTCPFeedback struct {
+	// Type is the type of feedback.
+	// see: https://draft.ortc.org/#dom-rtcrtcpfeedback
+	// valid: ack, ccm, nack, goog-remb, transport-cc
+	Type string
+
+	// The parameter value depends on the type.
+	// For example, type="nack" parameter="pli" will send Picture Loss Indicator packets.
+	Parameter string
+}
+```
+
+最终可以获得如下结构
+
+```go
+type RTPParameters struct {
+	HeaderExtensions []RTPHeaderExtensionParameter
+	Codecs           []RTPCodecParameters
+}
+
 type RTPCodecParameters struct {
 	RTPCodecCapability
 	PayloadType PayloadType
@@ -117,16 +160,19 @@ type RTPCodecParameters struct {
 	statsID string
 }
 
-// RTPCodecCapability provides information about codec capabilities.
-//
-// https://w3c.github.io/webrtc-pc/#dictionary-rtcrtpcodeccapability-members
 type RTPCodecCapability struct {
-	MimeType     string
+	MimeType     string // audio/opus 或者 video/h264
 	ClockRate    uint32
 	Channels     uint16
 	SDPFmtpLine  string
 	RTCPFeedback []RTCPFeedback
 }
+
+type RTPHeaderExtensionParameter struct {
+	URI string
+	ID  int
+}
 ```
 
-exmap是rtp的拓展头信息
+### 5.匹配media engine中的codec
+sdp协商媒体在于将offer和answer中的交集提取出来
