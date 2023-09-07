@@ -3,7 +3,9 @@ date: '2023-09-05'
 ---
 ### 1.sdp类型
 
-sdp有Plan B和Unified Plan两种，Unified Plan比Plan B更灵活，也是推荐的格式
+sdp有Plan B和Unified Plan两种，Unified Plan比Plan B更灵活，Plan B在目前的chrome中已经被废除
+Plan B, 仅支持一条音频m line, 和一条视频m line, 音频和视频的媒体流的标识（mid）分别被设置成audio和video。如果同个媒体包括多个发送流，那么在mline下，可以列出多行a=ssrc属性Unified Plan, 一个m line表示一个发送或者接收流，每条m line都可以独立标识mid; 如果存在多个流，那么可以创建出多个条mline
+Plan B和Unified Plan的判断方式是，如果多个track的mid相同，则是Plan B。如果只有一个ssrc，无法判断是Unified Plan和Plan B
 
 ```go
 v=0
