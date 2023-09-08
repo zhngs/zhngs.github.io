@@ -6,7 +6,8 @@ date: '2023-09-01'
 pion的onTrack回调可以拿到remote track
 
 - PeerConnection的startReceiver和handleIncomingSSRC方法会回调onTrack
-- startRtp是上述两个方法的入口
+- handleIncomingSSRC函数是用来处理未在sdp中声明的ssrc
+- startReceiver会利用sdp中解析出来的trackDetail，调用RTPReceiver的startReceive，startReceive会从dtlsTransport中拿到rtpReadStream、rtpInterceptor、rtcpReadStream、rtcpInterceptor，给RTPReceiver中的track赋值。对于rtx track，pion没有暴露给使用者，而是在函数中单独起了一个协程来读取
 
 ### 2.媒体启动流程
 
