@@ -43,3 +43,11 @@ pion的onTrack回调可以拿到remote track
   }()
   ```
 - decrypt方法会将新的stream通过chan传给AcceptStream函数，并最终被上层应用回调拿到stream
+
+### 3.媒体数据流向的本质
+
+在pion接收或发送媒体数据需要理解如下条件
+- 有一个可用的local-remote candidate对，stun、dtls包可以从中拿到，媒体包可以通过回调分发到上层
+- 要清楚sdp和pc的关系，sdp交换是主要是为了协商两端的媒体信息，所以一个pc对应一个local sdp和一个remote sdp
+- pc和stream的关系，一个pc对应一个stream，一个stream有多个track，对于Unified Plan，一个m line就是一个track，一个track和一个ssrc唯一对应，这里track也有可能会有重传ssrc。这里需要明确m line是可以不带track信息的，此时只有codec信息
+- pion中peerconnection的结构中有RTPTransceiver数组，一个RTPTransceiver和一个mid对应，RTPTransceiver包含一个RTPSender和RTPReceiver，两者中都有track列表。对于Unified Plan来说，一个mid只有一个track，此时RTPTRansciever实际只对应一个track；对于Plan B来说，一个mid可以有多个track，此时RTPSender和RTPReceiver中都track列表就可以起到作用
