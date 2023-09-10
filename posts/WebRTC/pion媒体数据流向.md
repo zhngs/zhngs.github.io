@@ -51,4 +51,12 @@ pion的onTrack回调可以拿到remote track
 - 要清楚sdp和pc的关系，sdp交换是主要是为了协商两端的媒体信息，所以一个pc对应一个local sdp和一个remote sdp
 - pc和stream的关系，一个pc对应一个stream，一个stream有多个track，对于Unified Plan，一个m line就是一个track，一个track和一个ssrc唯一对应，这里track也有可能会有重传ssrc。这里需要明确m line是可以不带track信息的，此时只有codec信息
 - pion中peerconnection的结构中有RTPTransceiver数组，一个RTPTransceiver和一个mid对应，RTPTransceiver包含一个RTPSender和RTPReceiver，两者中都有track列表。对于Unified Plan来说，一个mid只有一个track，此时RTPTRansciever实际只对应一个track；对于Plan B来说，一个mid可以有多个track，此时RTPSender和RTPReceiver中都track列表就可以起到作用
-- 正式开启媒体交互需要三个函数，pc.startRTPSenders，pc.configureRTPReceivers，startRTP。startRTPSenders的作用是配置媒体发送的数据结构，configureRTPReceivers的作用是配置媒体接收的数据结构，startRTP正式开启媒体发送和接收流程
+- 正式开启媒体交互需要三个函数，pc.startRTPSenders，pc.configureRTPReceivers，startRTP。startRTPSenders的作用是配置媒体发送的数据结构，configureRTPReceivers的作用是配置媒体接收的数据结构，startRTP正式开启媒体接收流程
+
+### 4.startRTPSenders函数
+- 遍历pc的所有transceiver，执行RTPSender的Send函数
+- Send函数会遍历RTPSender的trackEncodings，添加baseTrackLocalContext结构，对track字段调用Bind，并创建streamInfo字段，将writeStream字段和api的interceptor绑定
+
+### 5.configureRTPReceivers函数
+- 对未在pc的transceiver的track收集起来，遍历执行pc.configureReceiver
+- 针对每一个receiver，增加tracks切片的成员
