@@ -34,3 +34,7 @@ H264Reader开放了两个接口，NewReader和NextNAL。NewReader会传入一个
 - H264Reader.read会封底内部buffer的读写
 - bitStreamStartsWithH264Prefix会判断第一个StartCode的类型，并且只会使用一次
 - processByte会在后续持续使用，每次判断一个字节，目的是用来找到下一个StartCode，从而给出NALU
+
+### 3.H264Writer
+
+h264和rtp RFC文档：https://tools.ietf.org/html/rfc6184，H264Writer的核心函数是WriteRTP，会先判断关键帧，再将rtp的payload转换成h264数据
