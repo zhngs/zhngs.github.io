@@ -170,3 +170,9 @@ N1有3种取值
      :                  Opus Padding (Optional)...                   |
      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ```
+
+### 7.rtp封装opus
+
+文档：https://www.rfc-editor.org/rfc/rfc7587.html
+
+rtp的payload必须是上述四种packet的一种
