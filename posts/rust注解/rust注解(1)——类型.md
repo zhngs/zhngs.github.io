@@ -166,7 +166,7 @@ fn main() {
 
 ### 2.4 枚举
 
-rust的枚举功能非常强大，可以将任意类型的数据放入枚举成员中
+rust的枚举功能非常强大，可以将任意类型的数据放入枚举成员中，枚举和模式匹配会发挥出巨大的威力
 
 - `Quit` 没有关联任何数据，可以看做类单元结构体
 - `Move` 类似结构体包含命名字段，可以看做普通结构体
@@ -179,6 +179,21 @@ enum Message {
     Move { x: i32, y: i32 },
     Write(String),
     ChangeColor(i32, i32, i32),
+}
+```
+
+有两个非常常用的枚举，Option和Result
+- Option可以用来表示空值的概念，None和Some可以直接使用
+- Result用来表示可能出错的情况
+```rust
+enum Option<T> {
+    None,
+    Some(T),
+}
+
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
 }
 ```
 

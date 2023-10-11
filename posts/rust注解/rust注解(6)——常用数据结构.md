@@ -15,7 +15,52 @@ enum Option<T> {
 
 只要一个值不是 `Option<T>` 类型，你就 **可以** 安全的认定它的值不为空。这是 Rust 的一个经过深思熟虑的设计决策，来限制空值的泛滥以增加 Rust 代码的安全性
 
-# 二.vector
+# 二.Result
+Rust使用Result来处理错误情况
+```rust
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+```
+
+Result的unwrap和expect都会在出错时panic，区别是expect可以额外携带信息
+```rust
+let greeting_file = File::open("hello.txt").unwrap();
+let greeting_file = File::open("hello.txt").expect("hello.txt should be included in this project");
+```
+
+Rust可以使用问号来简洁处理错误返回
+- 如果未出错，返回值
+- 如果出错，直接return相应的错误
+
+以下是两个效果相同的函数
+```rust
+fn read_username_from_file() -> Result<String, io::Error> {
+    let username_file_result = File::open("hello.txt");
+
+    let mut username_file = match username_file_result {
+        Ok(file) => file,
+        Err(e) => return Err(e),
+    };
+
+    let mut username = String::new();
+
+    match username_file.read_to_string(&mut username) {
+        Ok(_) => Ok(username),
+        Err(e) => Err(e),
+    }
+}
+
+fn read_username_from_file() -> Result<String, io::Error> {
+    let mut username_file = File::open("hello.txt")?;
+    let mut username = String::new();
+    username_file.read_to_string(&mut username)?;
+    Ok(username)
+}
+```
+
+# 三.vector
 
 ## 1.新建
 
@@ -71,7 +116,7 @@ while let Some(top) = stack.pop() {
 }
 ```
 
-# 三.string
+# 四.string
 
 ## 1.新建
 
@@ -146,7 +191,7 @@ let hello = "дравствуйте";
 let s = &hello[0..4];
 ```
 
-# 四.HashMap
+# 五.HashMap
 
 ## 1.新建
 
