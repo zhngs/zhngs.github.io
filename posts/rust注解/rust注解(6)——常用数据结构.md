@@ -325,7 +325,7 @@ impl Drop for CustomSmartPointer {
 
 如果想要提前调用Drop trait中的drop函数，不可以直接调用drop方法，因为编译器会认为有double free。正确的方法是调用std::mem::drop，该函数位于prelude，可以直接调用
 
-## 4.Rc`<T>`
+## 4.Rc `<T>`
 
 支持引用计数的智能指针，类似于c++的shared_ptr，但只能用于单线程场景
 
@@ -349,7 +349,7 @@ fn main() {
 
 ```
 
-## 5.RefCell`<T>`
+## 5.RefCell `<T>`
 
 `RefCell<T>` 代表其数据的唯一的所有权，类似于c++的scoped_ptr
 
@@ -360,3 +360,7 @@ fn main() {
 * 因为 `RefCell<T>` 允许在运行时执行可变借用检查，所以我们可以在即便 `RefCell<T>` 自身是不可变的情况下修改其内部的值
 
 RefCell解决的核心问题：修改不可变变量内部的值，类似于c++的mutable关键字
+
+## 6.Weak `<T>`
+
+Weak `<T>`解决的问题是Rc `<T>`有可能造成循环引用，原理和c++的shared_ptr的循环引用相同
