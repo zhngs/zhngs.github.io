@@ -87,3 +87,13 @@ pub fn eat_at_restaurant() {
     let order2 = back_of_house::Appetizer::Salad;
 }
 ```
+
+# 二.自动化测试
+
+## 1.测试的组织结构
+
+rust有两种测试：**单元测试** （ *unit tests* ）与  **集成测试** （ *integration tests* ）
+
+单元测试与它们要测试的代码共同存放在位于 *src* 目录下相同的文件中，规范是在每个文件中创建包含测试函数的 `tests` 模块，并使用 `cfg(test)` 标注模块
+
+集成测试的位置在项目根目录下的*tests* 目录，与 *src* 同级
